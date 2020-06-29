@@ -21,7 +21,7 @@ from random import randint
 from os.path import isfile
 from pathlib import Path
 from subprocess import run, PIPE
-from fuzzywuzzy import fuzz, process
+from rapidfuzz import fuzz, process
 from rich import print as rprint
 from rich.console import Console
 from rich.style import Style
@@ -111,18 +111,18 @@ def match_authors(name, allcontrib_names, allcontrib_login):
     """
 
     # First, match the name. If no match, try Github login
-    matching = process.extract(name,
+    matching = process.extractOne(name,
                                allcontrib_names,
                                scorer=fuzz.token_sort_ratio,
-                               limit=1)
-    if matching[0][1] < 71:
+                               score_cutoff=71)
+    if not matching:
         # we likely haven't found a match yet, lets check Github handles
         matching = process.extract(name,
                                    allcontrib_login,
                                    scorer=fuzz.token_sort_ratio,
-                                   limit=1)
-    if matching[0][1] >= 71:
-        return [name, matching[0][0]], None
+                                   score_cutoff=71)
+    if matching:
+        return [name, matching[0]], None
     else:
         return None, name
 
