@@ -11,7 +11,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = ['rich',
-                'fuzzywuzzy']
+                'rapidfuzz']
 
 setup_requirements = ['pytest-runner', ]
 
